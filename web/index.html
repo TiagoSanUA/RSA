@@ -33,23 +33,51 @@
             })
     </script>
     <script type="text/javascript">
-        client = new Paho.MQTT.Client("localhost", 8080, "client");
+        client = new Paho.MQTT.Client("192.168.98.10", 8080, "client");
         client.onMessageArrived = onMessageArrived;
         client.connect({ onSuccess: onConnect });
 
         var markers = {};
 
+        var greenIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var yellowIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
         function onConnect() {
             console.log("onConnect");
             client.subscribe("vanetza/out/cam");
+            client.subscribe("vanetza/own/cam");
         }
 
         function onMessageArrived(message) {
             var m = JSON.parse(message.payloadString)
             var stationID = m["stationID"]
+            var stationType = m["stationType"]
             var latitude = m["latitude"]
             var longitude = m["longitude"]
-            markers[stationID] = L.marker([latitude, longitude]).addTo(map);
+            if (message.destinationName == "vanetza/own/cam") {
+                markers[stationID] = L.marker([latitude, longitude], { icon: greenIcon }).addTo(map);
+            }
+            else if (stationType == 15) {
+                markers[stationID] = L.marker([latitude, longitude], { icon: yellowIcon }).addTo(map);
+            }
+            else {
+                markers[stationID] = L.marker([latitude, longitude]).addTo(map);
+            }
         }
     </script>
 </body>
