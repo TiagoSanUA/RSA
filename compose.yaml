@@ -19,6 +19,7 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.10
+                
     rsu2:
         hostname: rsu2
         restart: always
@@ -46,7 +47,7 @@ services:
         cap_add:
             - "NET_ADMIN"
         environment:
-            - VANETZA_STATION_ID=12
+            - VANETZA_STATION_ID=11
             - VANETZA_STATION_TYPE=5
             - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:20
             - VANETZA_INTERFACE=br0
@@ -64,7 +65,7 @@ services:
         cap_add:
             - "NET_ADMIN"
         environment:
-            - VANETZA_STATION_ID=13
+            - VANETZA_STATION_ID=12
             - VANETZA_STATION_TYPE=5
             - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:30
             - VANETZA_INTERFACE=br0
@@ -83,7 +84,7 @@ services:
         cap_add:
             - "NET_ADMIN"
         environment:
-            - VANETZA_STATION_ID=4
+            - VANETZA_STATION_ID=13
             - VANETZA_STATION_TYPE=5
             - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:04
             - VANETZA_INTERFACE=br0
@@ -95,58 +96,61 @@ services:
             vanetzalan0:
                 ipv4_address: 192.168.98.40
 
+    # Server
+    #RSU 1
+    ipfs0:
+        hostname: ipfs0
+        image: ipfs/kubo:latest
+        command: ["daemon", "--init", "--migrate=true"]
+        volumes:
+            - /data/ipfs0:/data/ipfs
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.50
 
-    # Need to define the IPFS nodes
+    #RSU 2
+    ipfs1:
+        hostname: ipfs1
+        image: ipfs/kubo:latest
+        command: ["daemon", "--init", "--migrate=true"]
+        volumes:
+            - /data/ipfs1:/data/ipfs
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.60
 
-    # ipfs0:
-    #     hostname: ipfs0
-    #     image: ipfs/go-ipfs:latest
-    #     command: ["daemon", "--init", "--migrate=true"]
-    #     volumes:
-    #         - /data/ipfs:/data/ipfs0
-    #     networks:
-    #         vanetzalan0:
-    #             ipv4_address: 192.168.98.50
+    #OBU 1
+    ipfs2:
+        hostname: ipfs2
+        image: ipfs/kubo:latest
+        command: ["daemon", "--init", "--migrate=true"]
+        volumes:
+            - /data/ipfs2:/data/ipfs
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.70
 
-    # ipfs1:
-    #     hostname: ipfs1
-    #     image: ipfs/go-ipfs:latest
-    #     command: ["daemon", "--init", "--migrate=true"]
-    #     volumes:
-    #         - /data/ipfs:/data/ipfs1
-    #     networks:
-    #         vanetzalan0:
-    #             ipv4_address: 192.168.98.60
+    #OBU 2
+    ipfs3:
+        hostname: ipfs3
+        image: ipfs/kubo:latest
+        command: ["daemon", "--init", "--migrate=true"]
+        volumes:
+            - /data/ipfs3:/data/ipfs
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.80
 
-    # ipfs2:
-    #     hostname: ipfs2
-    #     image: ipfs/go-ipfs:latest
-    #     command: ["daemon", "--init", "--migrate=true"]
-    #     volumes:
-    #         - /data/ipfs:/data/ipfs2
-    #     networks:
-    #         vanetzalan0:
-    #             ipv4_address: 192.168.98.70
-
-    # ipfs3:
-    #     hostname: ipfs3
-    #     image: ipfs/go-ipfs:latest
-    #     command: ["daemon", "--init", "--migrate=true"]
-    #     volumes:
-    #         - /data/ipfs:/data/ipfs3
-    #     networks:
-    #         vanetzalan0:
-    #             ipv4_address: 192.168.98.80
-
-    # ipfs4:
-    #     hostname: ipfs4
-    #     image: ipfs/go-ipfs:latest
-    #     command: ["daemon", "--init", "--migrate=true"]
-    #     volumes:
-    #         - /data/ipfs:/data/ipfs4
-    #     networks:
-    #         vanetzalan0:
-    #             ipv4_address: 192.168.98.90
+    #OBU 3
+    ipfs4:
+        hostname: ipfs4
+        image: ipfs/kubo:latest
+        command: ["daemon", "--init", "--migrate=true"]
+        volumes:
+            - /data/ipfs4:/data/ipfs
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.90
             
 networks:
   vanetzalan0:

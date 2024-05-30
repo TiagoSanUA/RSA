@@ -1,6 +1,8 @@
 import json
 import paho.mqtt.client as mqtt
 import threading
+import ipfsapi
+
 from time import sleep
 
 from shapely.geometry import Point
@@ -34,6 +36,19 @@ def on_message(client, userdata, msg):
                 if area.contains(p):
                     print("%d: OBU %s is in %s"% (logn, stationID, areas_js[key]["name"]))
                     logn += 1
+                    # # Add the file to IPFS
+                    # try:
+                    #     res = ipfs_api.add('data/obu.jpg')
+                    #     file_hash = res['Hash']
+                    #     print(f'File added to IPFS with hash: {file_hash}')
+
+                    #     # Publish the file hash over MQTT
+                    #     client.publish("vanetza/out/ipfs", json.dumps({"stationID": stationID, "file_hash": file_hash}))
+
+                    # except Exception as e:
+                    #     print(f'An error occurred while adding file to IPFS: {e}')
+
+
 
     sleep(1)
 
@@ -46,6 +61,8 @@ with open('areas.json') as f:
 areas = {}
 for i in range(0, len(areas_js)):
     areas[i] = Polygon(areas_js[i]["points"])
+
+#ipfs_api = ipfsapi.connect('0.0.0.0', 5001)
 
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
