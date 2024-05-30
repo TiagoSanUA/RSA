@@ -6,11 +6,15 @@ from time import sleep
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 
+logn = 0
+
 def on_connect(client, userdata, flags, rc, properties):
     print("Connected with result code "+str(rc))
     client.subscribe("vanetza/out/cam")
 
 def on_message(client, userdata, msg):
+    global logn
+
     message = msg.payload.decode('utf-8')
     
     # print('Topic: ' + msg.topic)
@@ -20,13 +24,16 @@ def on_message(client, userdata, msg):
 
     if msg.topic=="vanetza/out/cam":
         stationID = obj["stationID"]
+        stationType = obj["stationType"]
         latitude = obj["latitude"]
         longitude = obj["longitude"]
-        p = Point([latitude, longitude])
-        for key in areas:
-            area = areas[key]
-            if area.contains(p):
-                print("OBU %s is in %s"% (stationID, areas_js[key]["name"]))
+        if (stationType==5):
+            p = Point([latitude, longitude])
+            for key in areas:
+                area = areas[key]
+                if area.contains(p):
+                    print("%d: OBU %s is in %s"% (logn, stationID, areas_js[key]["name"]))
+                    logn += 1
 
     sleep(1)
 
@@ -43,7 +50,7 @@ for i in range(0, len(areas_js)):
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("192.168.98.20", 1883, 60)
+client.connect("192.168.98.10", 1883, 60)
 
 threading.Thread(target=client.loop_forever).start()
 

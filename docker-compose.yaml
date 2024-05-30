@@ -1,0 +1,82 @@
+version: '2.4'
+services:
+    rsu1:
+        hostname: rsu1
+        restart: always
+        image: code.nap.av.it.pt:5050/mobility-networks/vanetza:ws
+        entrypoint: 
+        cap_add:
+            - "NET_ADMIN"
+        environment:
+            - VANETZA_STATION_ID=1
+            - VANETZA_STATION_TYPE=15
+            - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:10
+            - VANETZA_INTERFACE=br0
+            - START_EMBEDDED_MOSQUITTO=true
+            - SUPPORT_MAC_BLOCKING=true
+            - VANETZA_LATITUDE=40.634200
+            - VANETZA_LONGITUDE=-8.659971
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.10
+    rsu2:
+        hostname: rsu2
+        restart: always
+        image: code.nap.av.it.pt:5050/mobility-networks/vanetza:ws
+        entrypoint: 
+        cap_add:
+            - "NET_ADMIN"
+        environment:
+            - VANETZA_STATION_ID=2
+            - VANETZA_STATION_TYPE=15
+            - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:11
+            - VANETZA_INTERFACE=br0
+            - START_EMBEDDED_MOSQUITTO=true
+            - SUPPORT_MAC_BLOCKING=true
+            - VANETZA_LATITUDE=40.634200
+            - VANETZA_LONGITUDE=-8.659991
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.11
+
+    obu1:
+        hostname: obu1
+        restart: always
+        image: code.nap.av.it.pt:5050/mobility-networks/vanetza:ws
+        cap_add:
+            - "NET_ADMIN"
+        environment:
+            - VANETZA_STATION_ID=12
+            - VANETZA_STATION_TYPE=5
+            - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:20
+            - VANETZA_INTERFACE=br0
+            - START_EMBEDDED_MOSQUITTO=true
+            - SUPPORT_MAC_BLOCKING=true
+            - VANETZA_LATITUDE=40.634200
+            - VANETZA_LONGITUDE=-8.659871
+            - VANETZA_CAM_PERIODICITY=0
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.20
+    # obu2:
+    #     hostname: obu2
+    #     restart: always
+    #     image: code.nap.av.it.pt:5050/mobility-networks/vanetza:ws
+    #     cap_add:
+    #         - "NET_ADMIN"
+    #     environment:
+    #         - VANETZA_STATION_ID=13
+    #         - VANETZA_STATION_TYPE=5
+    #         - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:30
+    #         - VANETZA_INTERFACE=br0
+    #         - START_EMBEDDED_MOSQUITTO=true
+    #         - SUPPORT_MAC_BLOCKING=true
+    #         - VANETZA_LATITUDE=40.634200
+    #         - VANETZA_LONGITUDE=-8.659771
+    #     networks:
+    #         vanetzalan0:
+    #             ipv4_address: 192.168.98.30
+            
+networks:
+  vanetzalan0:
+    external: true

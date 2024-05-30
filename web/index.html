@@ -69,7 +69,10 @@
             var stationType = m["stationType"]
             var latitude = m["latitude"]
             var longitude = m["longitude"]
-            if (message.destinationName == "vanetza/own/cam") {
+            if (Object.keys(markers).includes(String(stationID))) {
+                markers[stationID].setLatLng([latitude, longitude]).update()
+            }
+            else if (message.destinationName == "vanetza/own/cam") {
                 markers[stationID] = L.marker([latitude, longitude], { icon: greenIcon }).addTo(map);
             }
             else if (stationType == 15) {

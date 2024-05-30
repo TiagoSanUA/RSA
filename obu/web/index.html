@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Controller</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <div name="controller">
+        <input type="text" id="target_latitude" placeholder="Latitude">
+        <input type="text" id="target_longitude" placeholder="Longitude">
+        <button onclick="teleport(document.getElementById('target_latitude').value, document.getElementById('target_longitude').value)">Teleport</button>
+        <button onclick="move(document.getElementById('target_latitude').value, document.getElementById('target_longitude').value)">Move</button>
+    </div>
+    <div name="status">
+        <div>Current latitude: <div style="display:inline" id="latitude">0</div></div>
+        <div>Current longitude: <div style="display:inline" id="longitude">0</div></div>
+    </div>
+    <script type="text/javascript">
+        client = new Paho.MQTT.Client("192.168.98.20", 8080, "client");
+        client.onMessageArrived = onMessageArrived;
+        client.connect({ onSuccess: onConnect });
+
+        function onConnect() {
+            console.log("onConnect");
+            client.subscribe("vanetza/in/cam");
+        }
+
+        function onMessageArrived(message) {
+            var m = JSON.parse(message.payloadString)
+            document.getElementById('latitude').innerHTML = m['latitude'];
+            document.getElementById('longitude').innerHTML = m['longitude'];
+        }
+
+        function teleport(latitude, longitude) {
+            message = new Paho.MQTT.Message(JSON.stringify({"latitude": latitude, "longitude": longitude}));
+            message.destinationName = "commands/teleport";
+            client.send(message)
+        }
+        function move(latitude, longitude) {
+            message = new Paho.MQTT.Message(JSON.stringify({"latitude": latitude, "longitude": longitude}));
+            message.destinationName = "commands/move";
+            client.send(message)
+        }
+    </script>
+</body>
+
+</html>
