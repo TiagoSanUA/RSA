@@ -33,7 +33,7 @@ services:
             - VANETZA_INTERFACE=br0
             - START_EMBEDDED_MOSQUITTO=true
             - SUPPORT_MAC_BLOCKING=true
-            - VANETZA_LATITUDE=40.634200
+            - VANETZA_LATITUDE=40.634280
             - VANETZA_LONGITUDE=-8.659991
         networks:
             vanetzalan0:
@@ -75,6 +75,78 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.30
+
+    obu3:
+        hostname: obu3
+        restart: always
+        image: code.nap.av.it.pt:5050/mobility-networks/vanetza:latest
+        cap_add:
+            - "NET_ADMIN"
+        environment:
+            - VANETZA_STATION_ID=4
+            - VANETZA_STATION_TYPE=5
+            - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:04
+            - VANETZA_INTERFACE=br0
+            - START_EMBEDDED_MOSQUITTO=true
+            - SUPPORT_MAC_BLOCKING=true
+            - VANETZA_LATITUDE=40.634100
+            - VANETZA_LONGITUDE=-8.659971
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.40
+
+
+    # Need to define the IPFS nodes
+
+    # ipfs0:
+    #     hostname: ipfs0
+    #     image: ipfs/go-ipfs:latest
+    #     command: ["daemon", "--init", "--migrate=true"]
+    #     volumes:
+    #         - /data/ipfs:/data/ipfs0
+    #     networks:
+    #         vanetzalan0:
+    #             ipv4_address: 192.168.98.50
+
+    # ipfs1:
+    #     hostname: ipfs1
+    #     image: ipfs/go-ipfs:latest
+    #     command: ["daemon", "--init", "--migrate=true"]
+    #     volumes:
+    #         - /data/ipfs:/data/ipfs1
+    #     networks:
+    #         vanetzalan0:
+    #             ipv4_address: 192.168.98.60
+
+    # ipfs2:
+    #     hostname: ipfs2
+    #     image: ipfs/go-ipfs:latest
+    #     command: ["daemon", "--init", "--migrate=true"]
+    #     volumes:
+    #         - /data/ipfs:/data/ipfs2
+    #     networks:
+    #         vanetzalan0:
+    #             ipv4_address: 192.168.98.70
+
+    # ipfs3:
+    #     hostname: ipfs3
+    #     image: ipfs/go-ipfs:latest
+    #     command: ["daemon", "--init", "--migrate=true"]
+    #     volumes:
+    #         - /data/ipfs:/data/ipfs3
+    #     networks:
+    #         vanetzalan0:
+    #             ipv4_address: 192.168.98.80
+
+    # ipfs4:
+    #     hostname: ipfs4
+    #     image: ipfs/go-ipfs:latest
+    #     command: ["daemon", "--init", "--migrate=true"]
+    #     volumes:
+    #         - /data/ipfs:/data/ipfs4
+    #     networks:
+    #         vanetzalan0:
+    #             ipv4_address: 192.168.98.90
             
 networks:
   vanetzalan0:
