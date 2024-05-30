@@ -1,9 +1,14 @@
 {
     "IT1": {
         "files": [
-            "test",
-            "test",
-            "test"
+            {
+                "hash": "QmR9F1kXndXoeaii1gjRWyojjFWWBsq6B6bMtMYCQMpiSF",
+                "description": "f1"
+            },
+            {
+                "hash": "Qmbs84zN4m1JmwDkGs4QtNvK4CwaP2U7GLbTYXmk1JBj2U",
+                "description": "f2"
+            }
         ],
         "points": [
             [40.6341526, -8.6596372],
@@ -14,9 +19,14 @@
     },
     "IT2": {
         "files": [
-            "test",
-            "test",
-            "test"
+            {
+                "hash": "QmVxt665ssovUcPVqXmVaSPnBx3tJjLSL32ugniFUEbn4R",
+                "description": "1"
+            },
+            {
+                "hash": "QmNhqfRKiJcdYZ6Ji4MHruJkqoybQSx3W2fG4i1zVhY7MA",
+                "description": "2"
+            }
         ],
         "points": [
             [40.6347854, -8.6600911],

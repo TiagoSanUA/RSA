@@ -1,14 +1,14 @@
 import json
 import paho.mqtt.client as mqtt
 import threading
-import ipfsapi
-
 from time import sleep
 
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 
 logn = 0
+
+obus = {}
 
 def on_connect(client, userdata, flags, rc, properties):
     print("Connected with result code "+str(rc))
@@ -31,38 +31,48 @@ def on_message(client, userdata, msg):
         longitude = obj["longitude"]
         if (stationType==5):
             p = Point([latitude, longitude])
-            for key in areas:
-                area = areas[key]
-                if area.contains(p):
-                    print("%d: OBU %s is in %s"% (logn, stationID, areas_js[key]["name"]))
-                    logn += 1
-                    # # Add the file to IPFS
-                    # try:
-                    #     res = ipfs_api.add('data/obu.jpg')
-                    #     file_hash = res['Hash']
-                    #     print(f'File added to IPFS with hash: {file_hash}')
-
-                    #     # Publish the file hash over MQTT
-                    #     client.publish("vanetza/out/ipfs", json.dumps({"stationID": stationID, "file_hash": file_hash}))
-
-                    # except Exception as e:
-                    #     print(f'An error occurred while adding file to IPFS: {e}')
-
-
+            if (not stationID in obus.keys()):
+                obus[stationID] = None
+            elif (obus[stationID]!=None and not areas[obus[stationID]]["area"].contains(p)):
+                print("%d: OBU %s left area %s"% (logn, stationID, obus[stationID]))
+                obus[stationID] = None
+                logn += 1
+            if obus[stationID]==None:
+                for key in areas:
+                    area = areas[key]["area"]
+                    if area.contains(p):
+                        if obus[stationID]!=key:
+                            print("%d: OBU %s entered area %s"% (logn, stationID, key))
+                            obus[stationID] = key
+                            logn += 1
+                            send_ipfs(stationID)
 
     sleep(1)
 
+def send_ipfs(stationID):
+    ip = "192.168.98." + str(stationID)
+    lclient = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+    lclient.connect(ip, 1883, 60)
+    lclient.publish("ipfs", json.dumps(areas[obus[stationID]]["files"]))
+    lclient.disconnect()
+
 def generate():
+    # f = open('./examples/in_ivim.json')
+    # m = json.load(f)
+    # ##
+    # ##
+    # m = json.dumps(m)
+    # client.publish("vanetza/in/ivim",m)
+    # f.close()
     sleep(1)
 
 with open('areas.json') as f:
     areas_js = json.load(f)
 
 areas = {}
-for i in range(0, len(areas_js)):
-    areas[i] = Polygon(areas_js[i]["points"])
-
-#ipfs_api = ipfsapi.connect('0.0.0.0', 5001)
+for key in areas_js.keys():
+    areas[key] = areas_js[key]
+    areas[key]['area'] = Polygon(areas_js[key]["points"])
 
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect

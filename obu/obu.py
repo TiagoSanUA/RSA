@@ -4,6 +4,8 @@ import paho.mqtt.client as mqtt
 import threading
 from time import sleep
 
+import requests
+
 stationID = 12
 stationType = 5
 latitude = 40.634200
@@ -21,6 +23,7 @@ def on_connect(client, userdata, flags, rc, properties):
     client.subscribe("vanetza/out/cam")
     client.subscribe("commands/teleport")
     client.subscribe("commands/move")
+    client.subscribe("ipfs")
 
 def on_message(client, userdata, msg):
     global latitude
@@ -49,6 +52,14 @@ def on_message(client, userdata, msg):
         target_latitude = latitude
         target_longitude = longitude
         print("Teleporting to: %f, %f"%(target_latitude,target_longitude))
+    
+    if msg.topic=="ipfs":
+        print("Received ipfs file information: %s"%(obj))
+        for file in obj:
+            print("Downloading %s"%file["hash"])
+            x = requests.get('http://192.168.98.13:8080/ipfs/%s'%(file["hash"]))
+            print(x.text)
+            print("Download complete")
 
     sleep(1)
 
@@ -102,7 +113,7 @@ def generate():
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("192.168.98.20", 1883, 60)
+client.connect("192.168.98.12", 1883, 60)
 
 threading.Thread(target=client.loop_forever).start()
 

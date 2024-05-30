@@ -1,0 +1,21 @@
+{
+    "mandatory": {
+        "serviceProviderId": {
+            "countryCode": "PT",
+            "providerIdentifier": 1
+        },
+        "iviIdentificationNumber": 1,
+        "iviStatus": 0
+    },
+    "optional": [
+        {
+            "tc": [
+                {
+                    "relevanceZoneIds": [0],
+                    "iviType": 4,
+                    "data": "hello"
+                }
+            ]
+        }
+    ]
+}
